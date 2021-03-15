@@ -1,0 +1,8 @@
+overview.txt
+src/x64
+src/cppcs.sln
+src/cppcs/x64
+src/cppcs/*.vcxproj
+src/cppcs/*.vcxproj.filters
+src/cppcs/*.vcxproj.user
+src/.vs

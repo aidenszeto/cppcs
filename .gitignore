@@ -6,3 +6,4 @@ src/cppcs/*.vcxproj
 src/cppcs/*.vcxproj.filters
 src/cppcs/*.vcxproj.user
 src/.vs
+src/cppcs/cache.cpp

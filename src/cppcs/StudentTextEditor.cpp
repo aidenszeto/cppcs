@@ -4,6 +4,8 @@
 #include <vector>
 #include <fstream>
 
+const std::string CACHE = "cache.cpp";
+
 TextEditor* createTextEditor(Undo* un)
 {
 	return new StudentTextEditor(un);
@@ -16,6 +18,9 @@ StudentTextEditor::StudentTextEditor(Undo* undo)
 	m_editor.push_back(">> ");
 	m_currRow = m_editor.begin();
 	m_upDown = m_editor.begin();
+	m_includes.insert("#include <iostream>");
+	m_includes.insert("#include <string>");
+	m_includes.insert("using namespace std;");
 }
 
 StudentTextEditor::~StudentTextEditor()
@@ -25,7 +30,7 @@ StudentTextEditor::~StudentTextEditor()
 
 bool StudentTextEditor::load(std::string file) 
 {
-	// load cpp or header files
+	m_includes.insert("#include \"" + file + "\"");
 	return true;
 }
 
@@ -39,16 +44,23 @@ bool StudentTextEditor::save(std::string file)
 		return false;
 	}
 
+	std::unordered_set<std::string>::iterator inc_itr = m_includes.begin();
+	while (inc_itr != m_includes.end())
+	{
+		outfile << *inc_itr << std::endl;
+		inc_itr++;
+	}
+
 	outfile << 
-		"#include <iostream>" << std::endl <<
-		"#include <string>" << std::endl <<
-		"using namespace std;" << std::endl << std::endl <<
-		"int main()" << std::endl << "{";
+		std::endl << "int main()" << std::endl << "{";
 
 	std::list<std::string>::iterator itr = m_editor.begin();
 	while (itr != --m_editor.end())
 	{
-		outfile << std::endl << '\t' << (*itr).substr(3);
+		if ((*itr).substr(3, 8) != "#include" || *itr == "\n")
+		{
+			outfile << std::endl << '\t' << (*itr).substr(3);	
+		}
 		itr++;
 	}
 
@@ -64,17 +76,16 @@ bool StudentTextEditor::save(std::string file)
 void StudentTextEditor::reset() 
 {
 	// Set all rows to empty strings and return cursor to (0,0)
-	std::list<std::string>::iterator itr = m_editor.begin();
-	while (!m_editor.empty())
-	{
-		itr = m_editor.erase(itr);
-	}
+	m_editor.clear();
+	m_includes.clear();
 	m_row = 0;
-	m_col = 0;
+	m_editor.push_back(">> ");
 	m_currRow = m_editor.begin();
+	m_col = 3;
 
 	// Empty all the actions in the undo stack
 	getUndo()->clear();
+	save(CACHE)
 }
 
 void StudentTextEditor::move(Dir dir) {
@@ -182,19 +193,22 @@ void StudentTextEditor::insert(char ch)
 
 void StudentTextEditor::enter() 
 {
-	// Move everything to the right of the cursor to the next row
-	std::string moveToNext = (*m_currRow).substr(m_col);
-	*m_currRow = (*m_currRow).substr(0, m_col);
-	if (m_currRow != m_editor.end())
+	if (m_currRow == --m_editor.end())
 	{
+		if ((*m_currRow).substr(3, 8) == "#include")
+		{
+			if (m_includes.find((*m_currRow).substr(3)) == m_includes.end())
+			{
+				m_includes.insert((*m_currRow).substr(3));
+			}
+			else
+			{
+				writeError((*m_currRow).substr(12) + " already included");
+				return;
+			}
+		}
+		m_editor.push_back(">> ");
 		m_currRow++;
-		m_editor.insert(m_currRow, ">> " + moveToNext);
-		m_currRow--;
-	}
-	else
-	{
-		m_editor.push_back(">> " + moveToNext);
-		m_currRow = --m_editor.end();
 	}
 
 	getUndo()->clear();
@@ -202,7 +216,7 @@ void StudentTextEditor::enter()
 	m_row++;
 	m_col = 3;
 
-	save("cache.cpp");
+	save(CACHE);
 }
 
 void StudentTextEditor::getPos(int& row, int& col) const {
@@ -297,4 +311,15 @@ void StudentTextEditor::undo()
 	default:
 		break;
 	}
+}
+
+void StudentTextEditor::writeError(std::string error)
+{
+	m_editor.push_back("\n");
+	m_editor.push_back("    ERROR: " + error);
+	m_editor.push_back("\n");
+	m_editor.push_back(">> ");
+	m_currRow = --m_editor.end();
+	m_row += 4;
+	move(Dir::HOME);
 }

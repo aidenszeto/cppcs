@@ -3,6 +3,7 @@
 
 #include "TextEditor.h"
 #include <list>
+#include <unordered_set>
 
 class Undo;
 
@@ -24,11 +25,14 @@ public:
 	void undo();
 
 private:
+	void writeError(std::string error);
+
 	int m_row;
 	int m_col;
 	std::list<std::string> m_editor;
 	std::list<std::string>::iterator m_currRow;
 	std::list<std::string>::iterator m_upDown;
+	std::unordered_set<std::string> m_includes;
 };
 
 #endif // STUDENTTEXTEDITOR_H_

@@ -14,6 +14,7 @@ const int CTRL_S = 'S' - 'A' + 1;
 const int CTRL_L = 'L' - 'A' + 1;
 const int CTRL_X = 'X' - 'A' + 1;
 const int CTRL_Z = 'Z' - 'A' + 1;
+const int CTRL_R = 'R' - 'A' + 1;
 
 class TextIO {
 public:

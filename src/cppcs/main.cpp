@@ -14,5 +14,13 @@ int main(int argc, char* argv[]) {
 	TextIO ti(FOREGROUND_COLOR, BACKGROUND_COLOR, HIGHLIGHT_COLOR);
 	EditorGui editor(LINES, COLS);
 
+	if (argc >= 2)
+	{
+		for (int i = 1; i < argc; i++)
+		{
+			editor.loadFileToEdit(argv[i]);
+		}		
+	}
+
 	editor.run();
 }       

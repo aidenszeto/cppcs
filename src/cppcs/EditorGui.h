@@ -132,6 +132,9 @@ private:
 		case CTRL_X:
 			if (quit()) return false;
 			break;
+		case CTRL_R:
+			te_->reset();
+			break;
 		default:
 			// A regular key was hit (e.g., qwerty); insert it into the document.
 			if (ch < 256) te_->insert(static_cast<char>(ch));

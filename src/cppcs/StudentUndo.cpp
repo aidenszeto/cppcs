@@ -32,7 +32,7 @@ void StudentUndo::submit(const Action action, int row, int col, char ch)
 			break;
 		case Action::INSERT:
 			// Append characters to end of string if adjacent insert detected
-			if (m_actions.top().m_col + 1 == col || (ch == '\t' && m_actions.top().m_col + 4 == col))
+			if ((m_actions.top().m_col + 1 == col || (ch == '\t' && m_actions.top().m_col + 4 == col)) && ch != ' ')
 			{
 				if (ch == '\t')
 				{

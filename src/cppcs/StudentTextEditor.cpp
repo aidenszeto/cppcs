@@ -3,8 +3,13 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <iostream>
+#include <cstdio>
 
+
+std::string execute(const std::string& command);
 const std::string CACHE = "cache.cpp";
+const std::string TEMP = "temp.txt";
 
 TextEditor* createTextEditor(Undo* un)
 {
@@ -19,8 +24,10 @@ StudentTextEditor::StudentTextEditor(Undo* undo)
 	m_currRow = m_editor.begin();
 	m_upDown = m_editor.begin();
 	m_includes.insert("#include <iostream>");
+	m_includes.insert("#include <fstream>");
 	m_includes.insert("#include <string>");
 	m_includes.insert("using namespace std;");
+	m_includes.insert("std::ofstream outfile(\"" + TEMP + "\");");
 }
 
 StudentTextEditor::~StudentTextEditor()
@@ -37,11 +44,18 @@ bool StudentTextEditor::load(std::string file)
 bool StudentTextEditor::save(std::string file)
 {
 	std::ofstream outfile(file);
+	std::ifstream infile(TEMP);
 
 	// Return false if file is inaccessible
 	if (!outfile)
 	{
 		return false;
+	}
+
+	// No file on first iteration, need to create one
+	if (!infile)
+	{
+		std::ofstream temp(TEMP);
 	}
 
 	std::unordered_set<std::string>::iterator inc_itr = m_includes.begin();
@@ -51,23 +65,41 @@ bool StudentTextEditor::save(std::string file)
 		inc_itr++;
 	}
 
-	outfile << 
-		std::endl << "int main()" << std::endl << "{";
+	outfile << std::endl << "int main()" << std::endl << "{";
 
-	std::list<std::string>::iterator itr = m_editor.begin();
-	while (itr != --m_editor.end())
+	std::list<std::string>::iterator itr = m_compile.begin();
+	while (itr != m_compile.end())
 	{
+		std::string line = *itr;
 		if ((*itr).substr(3, 8) != "#include" || *itr == "\n")
-		{
-			outfile << std::endl << '\t' << (*itr).substr(3);	
+		{			
+			size_t f_cout = (*itr).find("cout");
+			size_t f_op = (*itr).find("<<");
+			if (f_cout != std::string::npos && f_op != std::string::npos && f_op > f_cout)
+			{
+				line = "outfile <<" + (*itr).substr(f_op + 2); // need to check if file is accessible first
+				itr = m_compile.erase(itr);
+			}
+			outfile << std::endl << '\t' << line;	
 		}
-		itr++;
+		if (itr != m_compile.end()) itr++;
 	}
 
-	outfile <<
-		std::endl << "}" << std::endl;
+	outfile << std::endl << "}" << std::endl;
 
-	// run cache.cpp -> if there are errors, undo the changes and report error
+	// Compile cache.cpp and run executable
+	if (!system(nullptr))
+	{
+		return false;
+	}
+	// TODO: catch comiplation errors and writeError() if applicable
+	system("g++ -o cache cache.cpp"); 
+	system("cache.exe");
+	std::string s;
+	while (getline(infile, s))
+	{
+		writeOutput(s);
+	}
 
 	return true;
 }
@@ -85,7 +117,7 @@ void StudentTextEditor::reset()
 
 	// Empty all the actions in the undo stack
 	getUndo()->clear();
-	save(CACHE)
+	save(CACHE);
 }
 
 void StudentTextEditor::move(Dir dir) {
@@ -193,30 +225,40 @@ void StudentTextEditor::insert(char ch)
 
 void StudentTextEditor::enter() 
 {
-	if (m_currRow == --m_editor.end())
+	if (m_currRow != --m_editor.end())
 	{
-		if ((*m_currRow).substr(3, 8) == "#include")
+		return;
+	}	
+
+	if ((*m_currRow).substr(3, 8) == "#include")
+	{
+		if (m_includes.find((*m_currRow).substr(3)) == m_includes.end())
 		{
-			if (m_includes.find((*m_currRow).substr(3)) == m_includes.end())
-			{
-				m_includes.insert((*m_currRow).substr(3));
-			}
-			else
-			{
-				writeError((*m_currRow).substr(12) + " already included");
-				return;
-			}
+			m_includes.insert((*m_currRow).substr(3));
 		}
-		m_editor.push_back(">> ");
-		m_currRow++;
+		else
+		{
+			writeError((*m_currRow).substr(12) + " already included");
+			return;
+		}
 	}
-
-	getUndo()->clear();
-	m_upDown = m_currRow;
-	m_row++;
-	m_col = 3;
-
-	save(CACHE);
+	else
+	{
+		m_compile.push_back((*m_currRow).substr(3));
+		if (save(CACHE))
+		{
+			m_editor.push_back(">> ");
+			m_currRow++;
+			m_upDown = m_currRow;
+			m_row++;
+			m_col = 3;
+			getUndo()->clear();
+		}
+		else
+		{
+			writeError("Invalid command. Please try again.");
+		}
+	}
 }
 
 void StudentTextEditor::getPos(int& row, int& col) const {
@@ -322,4 +364,28 @@ void StudentTextEditor::writeError(std::string error)
 	m_currRow = --m_editor.end();
 	m_row += 4;
 	move(Dir::HOME);
+}
+
+void StudentTextEditor::writeOutput(std::string out)
+{
+	m_editor.push_back("\n");
+	m_editor.push_back("    " + out);
+	m_editor.push_back("\n");
+	m_currRow = --m_editor.end();
+	m_row += 3;
+	move(Dir::HOME);
+}
+
+std::string execute(const std::string& command) 
+{
+	system((command + " > temp.txt").c_str());
+
+	std::ifstream ifs("temp.txt");
+	std::string ret{ std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>() };
+	ifs.close(); // must close the inout stream so the file can be cleaned up
+	if (std::remove("temp.txt") != 0) 
+	{
+		perror("Error deleting temporary file");
+	}
+	return ret;
 }

@@ -26,10 +26,12 @@ public:
 
 private:
 	void writeError(std::string error);
+	void writeOutput(std::string out);
 
 	int m_row;
 	int m_col;
 	std::list<std::string> m_editor;
+	std::list<std::string> m_compile;
 	std::list<std::string>::iterator m_currRow;
 	std::list<std::string>::iterator m_upDown;
 	std::unordered_set<std::string> m_includes;

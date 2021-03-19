@@ -7,3 +7,5 @@ src/cppcs/*.vcxproj.filters
 src/cppcs/*.vcxproj.user
 src/.vs
 src/cppcs/cache.cpp
+src/cppcs/cache.exe
+src/cpcs/temp.txt

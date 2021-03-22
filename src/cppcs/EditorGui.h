@@ -246,16 +246,32 @@ private:
 		TextIO::move(dist_from_top, dist_from_left);
 	}
 
+	void produceBadPattern(const std::string& line, std::string& prob_str) {
+		if (line.empty()) return;
+		// Create a string of all spaces that is the same length of the input line. We start by
+		// assuming all words are spelled correctly.
+		if (line.find("    ERROR") != std::string::npos) {
+			prob_str = std::string(line.length(), kBadChar);
+		}
+		else if (line.find("    ") != std::string::npos) {
+			prob_str = std::string(line.length(), kPrintChar);
+		}
+		else {
+			prob_str = std::string(line.length(), kGoodChar);
+		}
+	}
+
 	// Write a line to the console at the specified location, optionally hilighting
 	// misspelled words in red.
 	// row: What row of the screen to print the line on.
 	// line: The line to output
 	void writeLine(int row, const std::string& line) {
 		std::string prob_str;
-
+		produceBadPattern(line, prob_str);
 		TextIO::move(row, 0);
 		// Determine what to actually print out. Since lines can be very long, we need to compute
 		// what columns of the line is currently being displayed within the GUI.
+
 		std::string print_me;
 		if (line.length() >= left_) {
 			print_me = line.substr(left_, cols_);
@@ -268,7 +284,7 @@ private:
 		}
 		// Print the text in white/red to hilight errors.
 		for (int i = 0; i < print_me.length(); ++i)
-			TextIO::print(print_me[i], prob_str[i] == kBadChar ? TextIO::COLOR::RED : TextIO::COLOR::WHITE);
+			TextIO::print(print_me[i], prob_str[i] == kBadChar ? TextIO::COLOR::RED : prob_str[i] == kPrintChar ? TextIO::COLOR::CYAN : TextIO::COLOR::WHITE);
 	}
 
 	// Display a prompt and get some input from the user (like a filename) on the status line.
@@ -349,7 +365,7 @@ private:
 	}
 
 	// Private variables and constants.
-	static const char kGoodChar = ' ', kBadChar = '*';
+	static const char kGoodChar = ' ', kBadChar = '*', kPrintChar = '$';
 	std::string filename_;
 	TextEditor* te_;
 	Undo* undo_;

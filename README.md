@@ -11,7 +11,7 @@ If you would like to comntribute to CPPCS, you may clone/download this repositor
 ## Getting Started
 The following commands are supported on CPPCS:
 - **CTRL-L**: Import a file into the CLI. This will allow you to utilize code (classes, functions, etc) from the imported file when scripting.
-- **CTRL-L**: Reset the CLI. This clears all commands previously called during the session and resets the editor window.
+- **CTRL-R**: Reset the CLI. This clears all commands previously called during the session and resets the editor window.
 - **CTRL-X**: Exits the CLI. The commands from the most recent session will be available in `cache.cpp`, which is located in the same directory as the executable.
 - **CTRL-Z**: Undos the most recent change. The undo stack is cleared every command, so previous commands cannot be undone. To undo a command, reset the CLI.
 - **Arrow Keys + Home/End**: Navigate around the CLI. The keys will exhibit the typical behavior of a command line interface.

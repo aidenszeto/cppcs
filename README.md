@@ -3,6 +3,8 @@ The C++ Command Shell (CPPCS) is a light-weight command line interface built for
 
 *_Note: In order to use CPPCS, you must have an adequate distribution g++ installed. For more information, see [Installing g++ on Windows](https://www3.cs.stonybrook.edu/~alee/g++/g++.html)_*
 
+![cppcs](https://user-images.githubusercontent.com/66970460/125360043-1b374e00-e320-11eb-87c5-78c4853d912a.png)
+
 ## Installation
 The CPPCS executable can be downloaded [here](https://github.com/aidenszeto/cppcs/raw/master/cppcs.exe). This executable contains the full command line interface and is ready for use immediately upon download. Alternatively, you can navigate to the root directory of this folder and download `cppcs.exe`.
 

@@ -15,3 +15,6 @@ The following commands are supported on CPPCS:
 - **CTRL-X**: Exits the CLI. The commands from the most recent session will be available in `cache.cpp`, which is located in the same directory as the executable.
 - **CTRL-Z**: Undos the most recent change. The undo stack is cleared every command, so previous commands cannot be undone. To undo a command, reset the CLI.
 - **Arrow Keys + Home/End**: Navigate around the CLI. The keys will exhibit the typical behavior of a command line interface.
+
+## Adding CPPCS to Path
+If you would like to make CPPCS accessible from any terminal location, please add the folder containing the downloaded `cppcs.exe` executable to your PATH. For more information on how to add environment variables to your Windows PATH, see [this tutorial](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/). Once CPPCS is added to your path, running `cppcs` on any command line should bring up The C++ Command Shell.

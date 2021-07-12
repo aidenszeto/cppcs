@@ -1,3 +1,10 @@
+<a href="">
+    <img src="https://img.shields.io/github/languages/code-size/aidenszeto/cppcs" alt="Size">
+</a>
+<a href="">
+    <img src="https://img.shields.io/badge/Licence-MIT-green.svg" alt="License">
+</a>
+
 # The C++ Command Shell
 The C++ Command Shell (CPPCS) is a light-weight command line interface built for C++ unit testing and scripting. It provides streamlined C++ file importing (both header and source) to improve the testing of large, chained codebases. For detailed information, feel free to reach out [here](mailto:aidenszeto@g.ucla.edu).
 

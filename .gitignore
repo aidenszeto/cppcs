@@ -10,6 +10,8 @@ cppcs/cache.cpp
 cppcs/cache.exe
 cppcs/temp.txt
 cppcs/Header.h
+cache.cpp
+temp.txt
 \#*#
 .\#*
 *~

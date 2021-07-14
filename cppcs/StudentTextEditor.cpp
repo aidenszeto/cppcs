@@ -18,9 +18,9 @@ TextEditor* createTextEditor(Undo* un)
 
 StudentTextEditor::StudentTextEditor(Undo* undo)
  : TextEditor(undo) {
+	reset();
 	m_row = 0;
 	m_col = 3;
-	m_editor.push_back(">> ");
 	m_currRow = m_editor.begin();
 	m_upDown = m_editor.begin();
 	m_includes.insert("#include <iostream>");
@@ -114,6 +114,10 @@ void StudentTextEditor::reset()
 	m_editor.push_back(">> ");
 	m_currRow = m_editor.begin();
 	m_col = 3;
+
+	// Reset TEMP file and CACHE file
+	remove("temp.txt");
+	remove("cache.cpp");
 
 	// Empty all the actions in the undo stack
 	getUndo()->clear();

@@ -18,7 +18,7 @@ const int CTRL_R = 'R' - 'A' + 1;
 
 class TextIO {
 public:
-	TextIO(int fgcolor, int bgcolor, int hilite) {
+	TextIO(int fgcolor= COLOR_WHITE, int bgcolor= COLOR_BLACK, int hilite= COLOR_RED) {
 		initscr();
 		start_color();
 		cbreak();

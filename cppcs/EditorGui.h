@@ -9,7 +9,6 @@
 
 #include "Undo.h"
 #include "TextEditor.h"
-#include "SpellCheck.h"
 #include "TextIO.h"
 
 class EditorGui {
@@ -18,7 +17,7 @@ public:
 	// rows: # of rows in the text editor window
 	// cols: # of columns in the tetx editor window
 	// filename: A path/filename used to load up a file upon initialization.
-	EditorGui(int rows, int cols) {
+	EditorGui(int rows=LINES, int cols=COLS) {
 		undo_ = createUndo();
 		te_ = createTextEditor(undo_);
 		rows_ = rows - 1; // leave the last row for status/loading files.

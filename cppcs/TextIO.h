@@ -1,12 +1,7 @@
 #ifndef TEXTIO_H_
 #define TEXTIO_H_
 
-#ifndef _MSC_VER
-#include <curses.h>		// https://www.linuxjournal.com/content/getting-started-ncurses
-#else
 #include "curses.h"
-#endif 
-
 #include <string>
 
 const int CTRL_D = 'D' - 'A' + 1;
@@ -18,7 +13,8 @@ const int CTRL_R = 'R' - 'A' + 1;
 
 class TextIO {
 public:
-	TextIO(int fgcolor= COLOR_WHITE, int bgcolor= COLOR_BLACK, int hilite= COLOR_RED) {
+	// Choices are COLOR_x, where x is WHITE, BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN
+	TextIO(int fgcolor=COLOR_WHITE, int bgcolor=COLOR_BLACK, int hilite=COLOR_RED) {
 		initscr();
 		start_color();
 		cbreak();

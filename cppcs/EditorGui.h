@@ -1,12 +1,7 @@
 #ifndef _EDITORGUI_H_
 #define _EDITORGUI_H_
 
-// Contains the class for our Editor Graphical User Interface (GUI). This class is used to run the overall
-// text editor, incorporating your core text editor, spell checker, and your undo system. We provide this
-// code.
-// 
-// ** Students must NOT modify this file as YOU WILL NOT TURN THIS FILE IN WITH YOUR PROJECT!
-
+#include "curses.h"
 #include "Undo.h"
 #include "TextEditor.h"
 #include "TextIO.h"

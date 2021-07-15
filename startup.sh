@@ -1,5 +1,5 @@
 #!/bin/bash
 
 shopt -s extglob
-g++ ./src/cppcs/!(cache).cpp -o run
+g++ ./cppcs/!(cache).cpp -o run
 ./run
